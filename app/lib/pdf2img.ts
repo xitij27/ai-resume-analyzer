@@ -1,3 +1,9 @@
+export interface PdfConversionResult {
+    imageUrl: string;
+    file: File | null;
+    error?: string;
+}
+
 export async function convertPdfToImage(file: File): Promise<PdfConversionResult> {
     if (typeof window === "undefined") {
         return { imageUrl: "", file: null, error: "PDF to image is only available in the browser" };
@@ -23,7 +29,7 @@ export async function convertPdfToImage(file: File): Promise<PdfConversionResult
         canvas.width = Math.floor(viewport.width);
         canvas.height = Math.floor(viewport.height);
 
-        await page.render({ canvasContext: context, viewport }).promise;
+        await page.render({ canvas, viewport }).promise;
 
         return new Promise((resolve) => {
             canvas.toBlob((blob) => {
